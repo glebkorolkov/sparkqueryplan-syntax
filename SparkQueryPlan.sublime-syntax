@@ -1,0 +1,9 @@
+%YAML 1.2
+---
+name: Spark Query Plan
+scope: source.sparkqueryplan
+
+context:
+  main:
+    - match: ^==\s\w+\s==$
+    - scope: markup.heading.sparkqueryplan
