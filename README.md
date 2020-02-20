@@ -16,7 +16,7 @@ with installed packages. Copy `SparkQueryPlan.sublime-syntax` to the `User` subf
 ### Usage
 After generating a query plan with `.explain()` copy the output into a new file in
 Sublime Text 3. The editor should detect the syntax automatically and apply code
-highlighting.
+highlighting. For best results use `OneDark` color theme.
 
 ### Comments
 One can add comments to the query plan. Comments start with `/*` and end with `*/`.
