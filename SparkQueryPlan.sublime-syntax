@@ -1,5 +1,7 @@
 %YAML 1.2
 ---
+# Version: 1.0
+
 # See http://www.sublimetext.com/docs/3/syntax.html
 scope: source.sparkqueryplan
 first_line_match: '==\s[\w\s]+\s=='
@@ -76,6 +78,7 @@ contexts:
         2: comment.line.sparkqueryplan
 
   bullet_points:
+    # Look like +- or :- or just :
     - match: \+\-
       scope: markup.list.unnumbered.bullet.sparkqueryplan
     - match: \*\(\d+\)
@@ -84,6 +87,7 @@ contexts:
       scope: markup.list.unnumbered.sparkqueryplan
 
   params:
+    # Named parameters that look like param=
     - match: \b(\w+)=
       captures:
         1 : variable.parameter.sparkqueryplan
@@ -113,7 +117,7 @@ contexts:
       pop: true
 
   comments:
-    # Comments begin with a '//' and finish at the end of the line.
+    # Comments begin with a '/*' and finish with a '*/'.
     - match: '\/\*'
       scope: punctuation.definition.comment.sparkqueryplan
       push:
