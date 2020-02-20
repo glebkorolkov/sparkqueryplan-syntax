@@ -1,9 +1,124 @@
 %YAML 1.2
 ---
-name: Spark Query Plan
+# See http://www.sublimetext.com/docs/3/syntax.html
+file_extensions:
+  - ec
 scope: source.sparkqueryplan
 
-context:
+contexts:
+  # The prototype context is prepended to all contexts but those setting
+  # meta_include_prototype: false.
+  prototype:
+    - include: comments
+
   main:
-    - match: ^==\s\w+\s==$
-    - scope: markup.heading.sparkqueryplan
+    # The main context is the initial starting point of our syntax.
+    # Include other contexts from here (or specify them directly).
+    - include: numbers
+    - include: booleans
+    - include: col_numbers
+    - include: strings
+    - include: titles
+    - include: spark_operations
+    - include: data_types
+    - include: bullet_points
+    - include: col_names
+    - include: sql_keywords
+    # - include: spark_keywords
+    - include: params
+    - include: file_name
+    - include: file_formats
+    - include: nulls
+
+  titles:
+    - match: '==\s[\w\s]+\s=='
+      scope: entity.other.inherited-class.sparkqueryplan
+      # scope: entity.name.section.sparkqueryplan
+
+  spark_operations:
+      - match: \b(Filter|Project|(?:Hash)?Aggregate|ArrowEvalPython|BroadcastHashJoin|BroadcastExchange|Exchange|Execute|FileScan|ObjectHashAggregate|Relation|ReusedExchange|RunningWindowFunction|Sort|SortMergeJoin|SubqueryAlias|SubqueryBroadcast)\b
+        scope: entity.name.class.sparkqueryplan
+      - match: (\+\-)\s(\*\(\d+\))?(\w+)\b
+        captures:
+          1: markup.list.unnumbered.bullet.sparkqueryplan
+          2: markup.list.unnumbered.sparkqueryplan
+          3: entity.name.class.sparkqueryplan
+
+  data_types:
+    - match: \b(?i:array|bigint|boolean|char|date|double|float|int|integer|smallint|string|struct|timestamp|tinyint)\b
+      scope: storage.type.sparkqueryplan
+
+  sql_keywords:
+    - match: \b(?i:as|abs|acos|add_months|and|approx_count_distinct|approx_percentile|array_contains|asc|ascii|asin|assert_true|atan|atan2|avg|base64|bin|binary|bit_length|bround|cast|cbrt|ceil|ceiling|char|char_length|character_length|chr|coalesce|collect_list|collect_set|concat|concat_ws|conv|corr|cos|cosh|cot|count|count_min_sketch|covar_pop|covar_samp|crc32|cube|cume_dist|current_database|current_date|current_timestamp|date_add|date_format|date_sub|date_trunc|datediff|day|dayofmonth|dayofweek|dayofyear|decimal|decode|degrees|dense_rank|desc|elt|encode|exp|explode|explode_outer|expm1|factorial|find_in_set|first|first_value|floor|format_number|format_string|from_json|from_unixtime|from_utc_timestamp|get_json_object|greatest|grouping|grouping_id|hash|hex|hour|hypot|if|ifnull|in|initcap|inline|inline_outer|input_file_block_length|input_file_block_start|input_file_name|instr|isnan|isnotnull|isnull|java_method|json_tuple|kurtosis|lag|last|last_day|last_value|lcase|lead|least|left|length|levenshtein|like|ln|locate|log|log10|log1p|log2|lower|lpad|ltrim|map|map_keys|map_values|max|md5|mean|min|minute|mod|monotonically_increasing_id|month|months_between|named_struct|nanvl|negative|next_day|not|now|ntile|nullif|nvl|nvl2|octet_length|or|parse_url|percent_rank|percentile|percentile_approx|pi|pmod|posexplode|posexplode_outer|position|positive|pow|power|printf|quarter|radians|rand|randn|rank|reflect|regexp_extract|regexp_replace|repeat|replace|reverse|right|rint|rlike|rollup|round|row_number|rpad|rtrim|second|sentences|sha|sha1|sha2|shiftleft|shiftright|shiftrightunsigned|sign|signum|sin|sinh|size|skewness|sort_array|soundex|space|spark_partition_id|split|sqrt|stack|std|stddev|stddev_pop|stddev_samp|str_to_map|substr|substring|substring_index|sum|tan|tanh|to_date|to_json|to_timestamp|to_unix_timestamp|to_utc_timestamp|translate|trim|trunc|ucase|unbase64|unhex|unix_timestamp|upper|uuid|var_pop|var_samp|variance|weekofyear|when|window|xpath|xpath_boolean|xpath_double|xpath_float|xpath_int|xpath_long|xpath_number|xpath_short|xpath_string|year)\b
+      scope: entity.name.function.sparkqueryplan
+
+  spark_keywords:
+    - match: \b(?i:merge_sum|partial_count|Some)\b
+      scope: entity.name.function.sparkqueryplan
+
+  numbers:
+    - match: '\b(-)?[0-9.]+\b'
+      scope: constant.numeric.sparkqueryplan
+
+  booleans:
+    - match: \b(?i:true|false)\b
+      scope: constant.other.sparkqueryplan
+
+  nulls:
+    - match: \b(?i:null|nulls|none)\b
+      scope: constant.other.sparkqueryplan
+
+  col_names:
+    - match: '`[\w_]+`'
+      scope: entity.other.attribute-name.sparkqueryplan
+    - match: \b([\w]+)(#[0-9]+L?)\b
+      captures:
+        1: entity.name.sparkqueryplan
+        2: comment.line.sparkqueryplan
+
+  bullet_points:
+    - match: \+\-
+      scope: markup.list.unnumbered.bullet.sparkqueryplan
+    - match: \*\(\d+\)
+      scope: markup.list.unnumbered.sparkqueryplan
+    - match: (?:\:\-|\:\s+[\:\+]\-?)
+      scope: markup.list.unnumbered.sparkqueryplan
+
+  params:
+    - match: \b(\w+)=
+      captures:
+        1 : variable.parameter.sparkqueryplan
+
+  file_name:
+    - match: (?:dbfs|hdfs|s3a|s3|file)\:[a-zA-Z0-9:_\/\-\.]+
+      scope: string.quoted.double.sparkqueryplan
+
+  file_formats:
+    - match: \b(?i:json|csv|parquet|delta|avro)\b
+      scope: constant.other.sparkqueryplan
+
+  strings:
+    # Strings begin and end with quotes, and use backslashes as an escape
+    # character.
+    - match: '"'
+      scope: punctuation.definition.string.begin.sparkqueryplan
+      push: inside_string
+
+  inside_string:
+    - meta_include_prototype: false
+    - meta_scope: string.quoted.double.sparkqueryplan
+    - match: '\.'
+      scope: constant.character.escape.sparkqueryplan
+    - match: '"'
+      scope: punctuation.definition.string.end.sparkqueryplan
+      pop: true
+
+  comments:
+    # Comments begin with a '//' and finish at the end of the line.
+    - match: '\/\*'
+      scope: punctuation.definition.comment.sparkqueryplan
+      push:
+        # This is an anonymous context push for brevity.
+        - meta_scope: comment.line.double-slash.sparkqueryplan
+        - match: '\*\/'
+          pop: true
