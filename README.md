@@ -13,5 +13,10 @@ with installed packages. Copy `SparkQueryPlan.sublime-syntax` to the `User` subf
 `Spark Query Plan` should now appear in the list of available syntaxes under
 `View -> Syntax` menu.
 
+### Usage
+After generating a query plan with `.explain()` copy the output into a new file in
+Sublime Text 3. The editor should detect the syntax automatically and apply code
+highlighting.
+
 ### Comments
 One can add comments to the query plan. Comments start with `/*` and end with `*/`.
